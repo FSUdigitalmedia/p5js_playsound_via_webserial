@@ -44,8 +44,6 @@ function openPort() {
   function initiateSerial() {
     console.log("port open");
     console.log(serial.portInfo);
-    console.log("requesting data from arduino");
-    sendByte();
   }
   // remove the port button once a port is chosen:
   if (portButton) portButton.hide();
@@ -56,27 +54,10 @@ function portError(err) {
   alert("serial port error: " + err);
 }
 
-function splitIntoArray(str) {
-  return String(str).split(',').map(Number);
-}
-
 function serialEvent() {
-  // read a string from the serial port
-  // until you get carriage return and newline:
-  var inString = serial.readLine();
-  //check to see that there's actually a string
-  // and that it contains a comma (ie: it's not a "hello")
-  if (inString && inString.indexOf(",")) { 
-    // convert the string to a list of numbers
-    // (we're assuming it's a comma separated list of numbers)
-    incomingSerialData = splitIntoArray(inString);
-    sendByte();
-  }
-}
-
-// send a single byte to request data from the arduino
-function sendByte() {
-  serial.print("x");
+  trackNumber = serial.read();
+  trackNumber -= 80; // subtract 80 to get a track number that starts at 0!
+  triggerTrack = true;
 }
 
 // try to connect if a new serial port 
